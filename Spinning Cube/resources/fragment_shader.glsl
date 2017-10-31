@@ -31,14 +31,13 @@ void main()
 
     colour = C_diff*I_a;
 
-    if(frag_position.y > 1.5) {
-        //if(dot(N, L) > 0)
-            colour += C_snow*k_d*I*max(0, dot(N, L));
-        //if(dot(R, V) > 0)
-            colour += C_spec*k_s*I*pow(max(0, dot(R, V)), alpha);
-    } else {
-        colour += C_diff*k_d*I*max(0, dot(N, L));
-    }
+//    if(frag_position.y > 1.5) {
+//        //if(dot(N, L) > 0)
+//            colour += C_snow*k_d*I*max(0, dot(N, L));
+//        //if(dot(R, V) > 0)
+//            colour += C_spec*k_s*I*pow(max(0, dot(R, V)), alpha);
+//    } else {
+    colour += C_diff*k_d*I*max(0, dot(N, L));
     //colour = abs(frag_normal);
 
 }

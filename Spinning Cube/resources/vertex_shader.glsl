@@ -19,11 +19,9 @@ void main()
     // Typicaly normal is transformed by the model matrix
     // Since the model matrix is identity in our case, we do not modify normals
     frag_normal = normal*rotationMatrix;
-//  frag_normal = normal;
 
     frag_position = position;
 
     // The position is projected to the screen coordinates using mvp_matrix
 	gl_Position = mvp_matrix * vec4(position * rotationMatrix, 1.0);
-//	gl_Position = mvp_matrix * vec4(position, 1.0);
 }
