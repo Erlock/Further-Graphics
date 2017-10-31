@@ -35,7 +35,7 @@ public class MainApp {
 
         OpenGLApplication app = null;
         try {
-            app = new OpenGLApplication(input);
+            app = new OpenGLApplication(/*input*/);
 
 //            if (output != null) {
 //                app.render();

@@ -1,4 +1,3 @@
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
@@ -18,9 +17,11 @@ import java.nio.IntBuffer;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL.createCapabilities;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
+import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class OpenGLApplication {
@@ -43,7 +44,7 @@ public class OpenGLApplication {
     private Camera camera;
     private long window;
     private ShaderProgram shaders;
-    private float[][] heightmap;
+    //    private float[][] heightmap;
     private int no_of_triangles;
     private int vertexArrayObj;
     // Callbacks for input handling
@@ -51,10 +52,10 @@ public class OpenGLApplication {
     private GLFWScrollCallback scroll_cb;
     private GLFWKeyCallback key_cb;
 
-    public OpenGLApplication(String heightmapFilename) {
+    public OpenGLApplication(/*String heightmapFilename*/) {
 
         // Load heightmap data from file into CPU memory
-        initializeHeightmap(heightmapFilename);
+//        initializeHeightmap(heightmapFilename);
     }
 
     // OpenGL setup - do not touch this method!
@@ -80,6 +81,8 @@ public class OpenGLApplication {
         glfwMakeContextCurrent(window);
         createCapabilities();
 
+        glEnable(GL_MULTISAMPLE);
+
         // Enable v-sync
         glfwSwapInterval(1);
 
@@ -100,9 +103,9 @@ public class OpenGLApplication {
         shaders = new ShaderProgram(vertShader, fragShader, "colour");
 
         // Initialize mesh data in CPU memory
-        float vertPositions[] = initializeVertexPositions(heightmap);
-        int indices[] = initializeVertexIndices(heightmap);
-        float vertNormals[] = initializeVertexNormals(heightmap);
+        float vertPositions[] = initializeVertexPositions(/*heightmap*/);
+        int indices[] = initializeVertexIndices(/*heightmap*/);
+        float vertNormals[] = initializeVertexNormals(/*heightmap*/);
         no_of_triangles = indices.length;
 
         // Load mesh data onto GPU memory
@@ -157,11 +160,12 @@ public class OpenGLApplication {
 
     /**
      * Create an array of vertex positions.
+     * <p>
+     * //     * @param heightmap 2D array with the heightmap
      *
-     * @param heightmap 2D array with the heightmap
      * @return Vertex positions in the format { x0, y0, z0, x1, y1, z1, ... }
      */
-    public float[] initializeVertexPositions(float[][] heightmap) {
+    public float[] initializeVertexPositions(/*float[][] heightmap*/) {
         // Generate and upload vertex data
 //        int heightmap_width_px = heightmap[0].length;
 //        int heightmap_height_px = heightmap.length;
@@ -246,7 +250,7 @@ public class OpenGLApplication {
         return vertPositions;
     }
 
-    public int[] initializeVertexIndices(float[][] heightmap) {
+    public int[] initializeVertexIndices(/*float[][] heightmap*/) {
 
 //        int heightmap_width_px = heightmap[0].length;
 //        int heightmap_height_px = heightmap.length;
@@ -279,7 +283,7 @@ public class OpenGLApplication {
         return indices;
     }
 
-    public float[] initializeVertexNormals(float[][] heightmap) {
+    public float[] initializeVertexNormals(/*float[][] heightmap*/) {
 
 //        int heightmap_width_px = heightmap[0].length;
 //        int heightmap_height_px = heightmap.length;
@@ -369,29 +373,29 @@ public class OpenGLApplication {
         return vertNormals;
     }
 
-    public float[][] getHeightmap() {
-        return heightmap;
-    }
+//    public float[][] getHeightmap() {
+//        return heightmap;
+//    }
 
-    public void initializeHeightmap(String heightmapFilename) {
-
-        try {
-            BufferedImage heightmapImg = ImageIO.read(new File(heightmapFilename));
-            int heightmap_width_px = heightmapImg.getWidth();
-            int heightmap_height_px = heightmapImg.getHeight();
-
-            heightmap = new float[heightmap_height_px][heightmap_width_px];
-
-            for (int row = 0; row < heightmap_height_px; row++) {
-                for (int col = 0; col < heightmap_width_px; col++) {
-                    float height = (float) (heightmapImg.getRGB(col, row) & 0xFF) / 0xFF;
-                    heightmap[row][col] = HEIGHTMAP_SCALE * (float) Math.pow(height, 2.2);
-                }
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Error loading heightmap");
-        }
-    }
+//    public void initializeHeightmap(String heightmapFilename) {
+//
+//        try {
+//            BufferedImage heightmapImg = ImageIO.read(new File(heightmapFilename));
+//            int heightmap_width_px = heightmapImg.getWidth();
+//            int heightmap_height_px = heightmapImg.getHeight();
+//
+//            heightmap = new float[heightmap_height_px][heightmap_width_px];
+//
+//            for (int row = 0; row < heightmap_height_px; row++) {
+//                for (int col = 0; col < heightmap_width_px; col++) {
+//                    float height = (float) (heightmapImg.getRGB(col, row) & 0xFF) / 0xFF;
+//                    heightmap[row][col] = HEIGHTMAP_SCALE * (float) Math.pow(height, 2.2);
+//                }
+//            }
+//        } catch (IOException e) {
+//            throw new RuntimeException("Error loading heightmap");
+//        }
+//    }
 
     public void loadDataOntoGPU(float[] vertPositions, int[] indices, float[] vertNormals) {
 
@@ -497,7 +501,7 @@ public class OpenGLApplication {
 //        rotMatrix.get(rot_buffer);
 //        glUniformMatrix3fv(rotPosition, false, rot_buffer);
         int anglePosition = glGetUniformLocation(shaders.getHandle(), "angle");
-        glUniform1f(anglePosition, (float)angle);
+        glUniform1f(anglePosition, (float) angle);
 
         // Setting camera location in fragment shader
         int camera_loc = glGetUniformLocation(shaders.getHandle(), "camera");
