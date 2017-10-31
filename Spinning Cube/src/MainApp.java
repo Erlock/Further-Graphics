@@ -1,4 +1,4 @@
-public class SupervisionApp {
+public class MainApp {
     public static final String DEFAULT_INPUT = "resources/mtsthelens.png";
 
     public static void usageError() {
