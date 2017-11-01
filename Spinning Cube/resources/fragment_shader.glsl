@@ -11,6 +11,15 @@ uniform vec3 camera;
 void main()
 {
 	//const vec3 I_a = vec3(0.2, 0.2, 0.2);       // Ambient light intensity (and colour)
+
+	int incidentFaces = 0;
+
+	incidentFaces += (abs(frag_position.x) >= 0.4 ? 1 : 0);
+	incidentFaces += (abs(frag_position.y) >= 0.4 ? 1 : 0);
+	incidentFaces += (abs(frag_position.z) >= 0.4 ? 1 : 0);
+
+    if(incidentFaces < 2) {
+
 	const vec3 I_a = vec3(0,0,1);
 
 	const float k_d = 0.8;                      // Diffuse light factor
@@ -39,5 +48,8 @@ void main()
 //    } else {
     colour += C_diff*k_d*I*max(0, dot(N, L));
     //colour = abs(frag_normal);
+    } else {
+        colour = vec3(0,0,0);
+    }
 
 }
